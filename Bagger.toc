@@ -5,9 +5,11 @@
 ## Version: 0.0.1
 ## DefaultState: enabled
 
-Localization.enUS.lua
-Localization.deDE.lua
+locale\locale.xml
+
 Bagger.lua
+
 # training.lua
+
 Bagger.xml
 
