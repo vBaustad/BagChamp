@@ -1,0 +1,10 @@
+## Interface: 90001
+## Title: Bagger
+## Author: vBaustad
+## Notes: Clean and compact bag addon.
+## Version: 0.0.1
+## DefaultState: enabled
+
+Bagger.lua
+#Bagger.xml
+
