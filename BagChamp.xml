@@ -9,21 +9,23 @@
         <Anchor point="BOTTOMRIGHT" x="-64" y="128"/>
     </Anchors>
     <Layers>
+        <!-- Background LAYER -->
         <Layer level="BACKGROUND">
-           
+
         </Layer>
-    </Layers>
 
-</Frame>
+        <!-- Overlay LAYER -->
+        <Layer level="OVERLAY">        
+            <!-- Title -->
+            <FontString name="$parent_Title" parentKey="title" inherits="GameFontNormal" text="BagChamp">
+                <Anchors>
+                    <Anchor point="TOP">
+                        <Offset x="0" y="-5"/>
+                    </Anchor>
+                </Anchors>
+            </FontString>
 
-<!--Frame for bag corner icon-->
-<Frame name="BagChampCornerIcon" parent="UIParent">
-    <Size x="484" y="512"/>
-    <Anchors>
-        <Anchor point="BOTTOMRIGHT" x="-64" y="128"/>
-    </Anchors>
- <Layers>
-        <Layer level="OVERLAY">
+            <!-- Bag portrait in corner -->
             <Texture name="$parent_Portrait" parentKey="portrait" file="Interface\ICONS\INV_Misc_Bag_22">
                 <Size x="58" y="58"/>
                 <Anchors>
@@ -36,8 +38,10 @@
     </Layers>
     <Scripts>
         <OnLoad function="BagChamp_OnLoad"/>
-    </Scripts> 
+    </Scripts>
+
 </Frame>
+
 
 
 </Ui>
