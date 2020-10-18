@@ -1,2 +1,2 @@
-# Bagger (Change the name)
+# BagChamp
 Project for learning Lua and wow addon creation.
