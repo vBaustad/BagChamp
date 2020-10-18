@@ -1,7 +1,25 @@
--- This is the beginning of the main file for this Bagger addon. 
--- Here i will put usefull and relevant information for anyone wanting to take a look
--- this is on my TODO list. 
+--[[
+
+    This is the beginning of the main file for this Bag addon. 
+    Here i will put usefull and relevant information for anyone wanting to take a look
+    
+
 --------------------------------------------------------------------------------------
+
+	
+
+
+    TODO: Change name of addon. Bagger is taken
+    TODO: Add addon information at start of file
+
+
+
+
+
+--------------------------------------------------------------------------------------
+]]
+
+
 
 --Localization
 local L = BaggerLocalization
