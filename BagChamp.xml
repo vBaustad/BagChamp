@@ -1,9 +1,43 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 
-<Frame name = ""
 
+<!--Main frame-->
+<Frame name="BagChamp" parent="UIParent" inherits="PortraitFrameTemplate">
+    <Size x="484" y="512"/>
+    <Anchors>
+        <Anchor point="BOTTOMRIGHT" x="-64" y="128"/>
+    </Anchors>
+    <Layers>
+        <Layer level="BACKGROUND">
+           
+        </Layer>
+    </Layers>
 
+</Frame>
+
+<!--Frame for bag corner icon-->
+<Frame name="BagChampCornerIcon" parent="UIParent">
+    <Size x="484" y="512"/>
+    <Anchors>
+        <Anchor point="BOTTOMRIGHT" x="-64" y="128"/>
+    </Anchors>
+ <Layers>
+        <Layer level="OVERLAY">
+            <Texture name="$parent_Portrait" parentKey="portrait" file="Interface\ICONS\INV_Misc_Bag_22">
+                <Size x="58" y="58"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset x="-4" y="7" />
+                    </Anchor>
+                </Anchors>
+            </Texture>
+        </Layer>
+    </Layers>
+    <Scripts>
+        <OnLoad function="BagChamp_OnLoad"/>
+    </Scripts> 
+</Frame>
 
 
 </Ui>

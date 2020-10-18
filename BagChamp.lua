@@ -19,10 +19,19 @@
 ]]
 
 
-
 --Localization
 local L = BagChampLocalization
 
+
+--On Load function
+
+function BagChamp_OnLoad(self)
+    SetPortraitToTexture(self.portrait, "Interface\\ICONS\\INV_Misc_Bag_22") 
+end
+
+
+
+-- Test printing straight from locale file
 print(L.FRAMES_LOCKED)
 
 
