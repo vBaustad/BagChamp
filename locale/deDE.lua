@@ -1,9 +1,9 @@
 
 if GetLocale() == "deDE" then
-    if not BaggerLocalization then
-        BaggerLocalization = {}
+    if not BagChampLocalization then
+        BagChampLocalization = {}
     end
     
-    BaggerLocalization["FRAMES_LOCKED"] = "Frames wurden gesperrt"
-    BaggerLocalization["FRAMES_UNLOCKED"] = "Frames wurden entsperrt"
+    BagChampLocalization["FRAMES_LOCKED"] = "Frames wurden gesperrt"
+    BagChampLocalization["FRAMES_UNLOCKED"] = "Frames wurden entsperrt"
 end

@@ -1,5 +1,5 @@
 ## Interface: 90001
-## Title: Bagger
+## Title: BagChamp
 ## Author: vBaustad
 ## Notes: Clean and compact bag addon.
 ## Version: 0.0.1
@@ -7,9 +7,9 @@
 
 locale\locale.xml
 
-Bagger.lua
+BagChamp.lua
 
 # training.lua
 
-Bagger.xml
+BagChamp.xml
 

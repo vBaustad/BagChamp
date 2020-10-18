@@ -9,8 +9,7 @@
 	
 
 
-    TODO: Change name of addon. Bagger is taken
-    TODO: Add addon information at start of file
+        TODO: Add addon information at start of file
 
 
 
@@ -22,7 +21,7 @@
 
 
 --Localization
-local L = BaggerLocalization
+local L = BagChampLocalization
 
 print(L.FRAMES_LOCKED)
 
