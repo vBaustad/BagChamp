@@ -1,9 +1,54 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 
+<!-- Item Button Template-->
+<Button name="BagChampItemTemplate" virtual="true">
+    <Size>
+        <AbsDimension x="37" y="37"/>
+    </Size>
+    <Layers>
+        <Layer level="BORDER">
+            <Texture name="$parentIconTexture" parentKey="icon" />
+            <FontString name="$parentCount" parentKey="count" inherits="NumberFontNormal" justifyH="RIGHT" hidden="true">
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT">
+                        <Offset>
+                            <AbsDimension x="-5" y="2"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </FontString>
+        </Layer>
+        <Layer level="OVERLAY">
+            <Texture name="$parentGlow" parentKey="glow" alphamode="ADD" file="Interface\BUTTONS\UI-ActionButton-Border">
+                <Size x="70" y="70"/>
+                <Anchors>
+                    <Anchor point="CENTER"/>
+                </Anchors>
+                <Color r="1.0" g="1.0" b="1.0" a="0.6"/>
+            </Texture> 
+        </Layer>
+    </Layers>
+    <NormalTexture name="$parentNormalTexture" file="Interface\BUTTONS\UI-Quickslot2">
+        <Size>
+            <AbsDimension x="64" y="64"/>            
+        </Size>
+        <Anchors>
+            <Anchor point="CENTER">
+                <Offset>
+                    <AbsDimension x="0" y="-1"/>                    
+                </Offset>
+            </Anchor>
+        </Anchors>
+    </NormalTexture>
+    <PushedTexture file="Interface\BUTTONS\UI-Quickslot-Depress"/>
+    <HighlightTexture file="Interface\BUTTONS\ButtonHilight-Square" alphamode="ADD"/>
+</Button>
+
+
 
 <!--Main frame-->
-<Frame name="BagChamp" parent="UIParent" inherits="PortraitFrameTemplate">
+<Frame name="BagChamp" parent="UIParent" inherits="PortraitFrameTemplate" enableMouse="true" movable="true">
     <Size x="484" y="512"/>
     <Anchors>
         <Anchor point="BOTTOMRIGHT" x="-64" y="128"/>
@@ -11,7 +56,8 @@
     <Layers>
         <!-- Background LAYER -->
         <Layer level="BACKGROUND">
-
+        <Scripts>
+        </Scripts>
         </Layer>
 
         <!-- Overlay LAYER -->
@@ -37,11 +83,9 @@
         </Layer>
     </Layers>
     <Scripts>
-        <OnLoad function="BagChamp_OnLoad"/>
+        <OnLoad function="BagChamp_OnLoad"/> 
     </Scripts>
 
 </Frame>
-
-
-
 </Ui>
+
