@@ -24,26 +24,39 @@
 
 --Localization
 local L = BagChampLocalization
+local bagslots = 112
+local numberOfItemSlotsWidth = 12
+local numberOfItemSlotsHeight = bagslots / numberOfItemSlotsWidth
+
 
 
 --On Load function
-
 function BagChamp_OnLoad(self)
-    SetPortraitToTexture(self.portrait, "Interface\\ICONS\\INV_Misc_Bag_22")
+    
+
+    --Set frame size  
+    self:SetSize((numberOfItemSlotsWidth * 38) + 20 + (12 * numberOfItemSlotsWidth), (numberOfItemSlotsHeight * 38)+ 70 +(numberOfItemSlotsHeight * 7))
 
     --Create the item slots
+    itemWidth = 1
     self.items = {}
-    for idx = 1, 24 do -- TODO 2
+    for idx = 1, bagslots do 
         local item = CreateFrame("Button", "BagChamp_Item" .. idx, self, "BagChampItemTemplate")
+        
+
         self.items[idx] = item
         if idx == 1 then
-            item:SetPoint("TOPLEFT", 30, -75)
-        elseif idx == 7 or idx == 13 or idx == 19 then
-            item:SetPoint("TOPLEFT", self.items[idx-6], "BOTTOMLEFT", 0, -7)
+            item:SetPoint("TOPLEFT", 20, -50)
+            itemWidth = itemWidth +1
+        elseif itemWidth == numberOfItemSlotsWidth+1 then
+            item:SetPoint("TOPLEFT", self.items[idx- numberOfItemSlotsWidth], "BOTTOMLEFT", 0, -7)
+            itemWidth = 2
         else 
             item:SetPoint("TOPLEFT", self.items[idx-1], "TOPRIGHT", 12, 0)
+            itemWidth = itemWidth +1
         end
     end 
+
 end
 
 
@@ -53,27 +66,8 @@ end
 
 
 
--- Test printing straight from locale file
-print(L.FRAMES_LOCKED)
 
 
 
---Print to chat when entering/leaving combat
-if not MyCombatFrame then
-    CreateFrame("Frame", "MyCombatFrame", UIParent)
-end
-
-MyCombatFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
-MyCombatFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
-
-function MyCombatFrame_OnEvent(self, event, ...)
-    if event == "PLAYER_REGEN_ENABLED" then
-        print("Leaving Combat...")
-    elseif event == "PLAYER_REGEN_DISABLED" then
-        print("Entering Combat!")
-    end
-end
-
-MyCombatFrame:SetScript("OnEvent", MyCombatFrame_OnEvent)
 
 

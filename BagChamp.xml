@@ -4,7 +4,7 @@
 <!-- Item Button Template-->
 <Button name="BagChampItemTemplate" virtual="true">
     <Size>
-        <AbsDimension x="37" y="37"/>
+        <AbsDimension x="35" y="35"/>
     </Size>
     <Layers>
         <Layer level="BORDER">
@@ -47,22 +47,55 @@
 
 
 
-<!--Main frame-->
-<Frame name="BagChamp" parent="UIParent" inherits="PortraitFrameTemplate" enableMouse="true" movable="true">
-    <Size x="484" y="512"/>
+<!-- Main frame-->
+<Frame name="BagChamp" parent="UIParent" frameStrata="HIGH" toplevel="true" enableMouse="true" movable="true" >
+    <Size x="200" y="200"/>
+	<Anchors>
+		<Anchor point="CENTER"/>
+	</Anchors> 
+    <Layers>
+        <Layer level="BACKGROUND">
+         <Texture name="BagChampBackground" file="Interface\TutorialFrame\TutorialFrameBackground" tile="true"/>    
+        </Layer>
+    </Layers>   
+
+    <Scripts>
+        <OnLoad function="BagChamp_OnLoad"/> 
+    </Scripts>
+
+</Frame>
+</Ui>
+
+
+
+
+
+<!--
+
+inherits="PortraitFrameTemplate"
+
+
+<Size x="484" y="512"/>
     <Anchors>
         <Anchor point="BOTTOMRIGHT" x="-64" y="128"/>
     </Anchors>
     <Layers>
-        <!-- Background LAYER -->
-        <Layer level="BACKGROUND">
-        <Scripts>
-        </Scripts>
+        Background LAYER
+        <Layer level="BACKGROUND">    
+        <Texture name="$parent_ButtonBackground" parentKey="BagChamp" file="Interface\ACHIEVEMENTFRAME\UI-Achievement-StatsBackground">
+        <Texture name="$parent_ButtonBackground" parentKey="BagChamp" file="Interface\FrameGeneral\UI-Background-Marble">
+            <Size x="485" y="460"/>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset x="0" y="-50"/>
+                </Anchor>
+            </Anchors>
+        </Texture>
         </Layer>
 
-        <!-- Overlay LAYER -->
+        Overlay LAYER
         <Layer level="OVERLAY">        
-            <!-- Title -->
+            Title
             <FontString name="$parent_Title" parentKey="title" inherits="GameFontNormal" text="BagChamp">
                 <Anchors>
                     <Anchor point="TOP">
@@ -71,7 +104,7 @@
                 </Anchors>
             </FontString>
 
-            <!-- Bag portrait in corner -->
+             Bag portrait in corner
             <Texture name="$parent_Portrait" parentKey="portrait" file="Interface\ICONS\INV_Misc_Bag_22">
                 <Size x="58" y="58"/>
                 <Anchors>
@@ -80,12 +113,63 @@
                     </Anchor>
                 </Anchors>
             </Texture>
-        </Layer>
+        </Layer>        
     </Layers>
-    <Scripts>
-        <OnLoad function="BagChamp_OnLoad"/> 
-    </Scripts>
 
-</Frame>
-</Ui>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<Layer level="ARTWORK">
+             
+            <Texture name="$parentBorderT" parentKey="borderT" file="Interface\FrameGeneral\_UI-Frame" alphaMode="BLEND">
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset x="0" y="-280"/>
+                    </Anchor>
+                    <Anchor point="TOPRIGHT">
+                        <Offset x="0" y="-280"/>
+                    </Anchor>
+                </Anchors>
+                <TexCoords left="0.00390625" right="0.998046875" top="0.21484375" bottom="0.224609375"/>
+            </Texture>
+        </Layer>
+
+
+topleft: 0, 27
+bottomright: 255, 29
+
+magic number = 1/256 = 0.00390625 / 2 = 0.001953125
+
+left= 0/256 = 0.001953125
+
+top = 27/128 = 0.2109375 + 0.00390625 = 0.212890625
+
+right = 255/256 = 0.99609375 - 0.001953125 = 0.998046875
+
+bottom = 29/128 = 0.2265625 - 0.001953125 = 0.224609375
+
+
+-->
