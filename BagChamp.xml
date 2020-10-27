@@ -57,10 +57,27 @@
         <Layer level="BACKGROUND">
          <Texture name="BagChampBackground" file="Interface\TutorialFrame\TutorialFrameBackground" tile="true"/>    
         </Layer>
-    </Layers>   
-
+    </Layers>
     <Scripts>
         <OnLoad function="BagChamp_OnLoad"/> 
+        <OnMouseDown>
+         if button == "LeftButton" and not self.isMoving then
+          self:StartMoving();
+          self.isMoving = true;
+         end
+        </OnMouseDown>
+        <OnMouseUp>
+         if button == "LeftButton" and self.isMoving then
+          self:StopMovingOrSizing();
+          self.isMoving = false;
+         end
+        </OnMouseUp>
+        <OnHide>
+         if ( this.isMoving ) then
+          this:StopMovingOrSizing();
+          this.isMoving = false;
+         end
+        </OnHide>
     </Scripts>
 
 </Frame>
