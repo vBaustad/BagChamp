@@ -52,9 +52,9 @@
 -- Set variables
 local L = BagChampLocalization
 local ItemSlotsWidth = 12
-local iconSpaceHeight = 7
-local iconSpaceWidth = 7
-local buttonsize = 35
+local iconSpaceHeight = 2
+local iconSpaceWidth = 2
+local buttonsize = 39
 
 
 
@@ -100,16 +100,7 @@ function BagChamp_CalculateBagslots()
         end
     end
 
-    
-    print("You have", totalSlots, "slots total in your bags, and", freeSlots, " free slots in your inventory")
-
-    --get number of bagslots from window
-
     -- Is minimalist option turned on 
-
-    -- get number of used bagslots
-
-    -- substract used slots from # slots
 
     -- Return used slots, free slots, minimalist option true og false
 
@@ -117,9 +108,22 @@ function BagChamp_CalculateBagslots()
 
 end
 
+function BagChamp_Button_OnEnter(self, motion)
+    if self.link then
+        GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
+        GameTooltip:SetHyperlink(self.link)
+        GameTooltip:Show()
+    end
+end
+
+function BagChamp_Button_OnLeave(self, motion)
+    GameTooltip:Hide()
+end
+
+
 --On Load function
 function BagChamp_OnLoad(self)
-        
+    
     --testing assigning multiple variables from one call
     local totalSlots, freeSlots = BagChamp_CalculateBagslots()   
     
@@ -140,13 +144,33 @@ function BagChamp_OnLoad(self)
             item:SetPoint("TOPLEFT", 10, -50)
             itemWidth = itemWidth +1
         elseif itemWidth == ItemSlotsWidth+1 then
-            item:SetPoint("TOPLEFT", self.items[idx- ItemSlotsWidth], "BOTTOMLEFT", 0, -7)
+            item:SetPoint("TOPLEFT", self.items[idx- ItemSlotsWidth], "BOTTOMLEFT", 0, -2)
             itemWidth = 2
         else 
-            item:SetPoint("TOPLEFT", self.items[idx-1], "TOPRIGHT", 7, 0)
+            item:SetPoint("TOPLEFT", self.items[idx-1], "TOPRIGHT", 2, 0)
             itemWidth = itemWidth +1            
         end
     end 
+
+    --Create the filter buttons
+    self.filters = {}
+    for idx=0, 6 do 
+        local button = CreateFrame("CheckButton", "BagChamp_Filter" .. idx, self, "BagChampFilterTemplate")
+        SetItemButtonTexture(button, "Interface\\ICONS\\INV_Misc_Gem_Pearl_02")
+        self.filters[idx] = button 
+        if idx == 0 then
+            button:SetPoint("TOPLEFT", 10, 40)
+        else
+            button:SetPoint("TOPLEFT", self.filters[idx-1], "TOPRIGHT", 2, 0)
+        end
+        button.icon:SetVertexColor(GetItemQualityColor(idx))
+        button:SetChecked(false)
+        button.quality = idx
+        button.glow:Hide()
+    end
+
+    self.filters[-1] = self.filters[0]
+    
 end
 
 
@@ -160,9 +184,16 @@ function BagChamp_Update()
         for slot = 0, GetContainerNumSlots(bag) do
             local texture, count, locked, quality, readable, lootable, link = GetContainerItemInfo(bag, slot)
             if texture then
-                -- If found, grab the item number and store other data
-                local itemNum = tonumber(link:match("|Hitem:(%d+):"))
-                if not items[itemNum] then
+                local shown = true
+
+                if BagChamp.qualityFilter then
+                    shown = shown and BagChamp.filters[quality]:GetChecked()
+                end
+
+                if shown then
+                    -- If an item is found, grab the item number and store data
+                    local itemNum = tonumber(link:match("|Hitem:(%d+):"))
+                    if not items[itemNum] then
                     items[itemNum] = {
                     texture = texture,
                     count = count,
@@ -170,9 +201,10 @@ function BagChamp_Update()
                     name = GetItemInfo(link),
                     link = link,
                     }
-                else
-                    -- The item already exists in our table, just update the count
+                    else
+                    -- The item already exists in table, just update the count
                     items[itemNum].count = items[itemNum].count + count
+                    end
                 end
             end
         end
@@ -193,7 +225,8 @@ function BagChamp_Update()
 
         if entry then
             --There is an item in this slot
-
+            
+            button.link = entry.link
             button.icon:SetTexture(entry.texture)
             if entry.count > 1 then
                 button.count:SetText(entry.count)
@@ -203,20 +236,47 @@ function BagChamp_Update()
             end
 
             if entry.quality > -1 then 
-                button.glow:SetVertexColor(GetItemQualityColor(4))
-                --button.glow:SetVertexColor(GetItemQualityColor(entry.quality))
+                button.glow:SetVertexColor(GetItemQualityColor(entry.quality))
                 button.glow:Show()
             else
                 button.glow:Hide()
             end
+            --shows items from filter / show all items if not filtered
             button:Show()
+            button.count:Show()
+            button.icon:Show()
         else
-            --button:Hide()
+            --Hides items outside filter
+            SetItemButtonTexture(button, "Interface\\PaperDoll\\UI-Backpack-EmptySlot")
+            button.glow:Hide()
+            button.link = nil
+            button.count:Hide()
+            --button.icon:Hide()
+            
         end 
     end
 
 end
 
+function BagChamp_Filter_OnEnter(self, motion)
+    GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
+    GameTooltip:SetText(_G["ITEM_QUALITY" .. self.quality .. "_DESC"])
+    GameTooltip:Show()
+end
 
+function BagChamp_Filter_OnLeave(self, motion)
+    GameTooltip:Hide()
+end
+
+function BagChamp_Filter_OnClick(self, button)    
+    BagChamp.qualityFilter = false
+    for idx = 0, 6 do
+        local button = BagChamp.filters[idx]
+        if button:GetChecked() then
+            BagChamp.qualityFilter = true
+        end
+    end
+    BagChamp_Update()    
+end
 
 

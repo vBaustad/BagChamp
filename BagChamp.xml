@@ -4,7 +4,7 @@
 <!-- Item Button Template-->
 <Button name="BagChampItemTemplate" virtual="true">
     <Size>
-        <AbsDimension x="35" y="35"/>
+        <AbsDimension x="39" y="39"/>
     </Size>
     <Layers>
         <Layer level="BORDER">
@@ -29,6 +29,10 @@
             </Texture> 
         </Layer>
     </Layers>
+    <Scripts>
+        <OnEnter function="BagChamp_Button_OnEnter"/>
+        <OnLeave function="BagChamp_Button_OnLeave"/>
+    </Scripts>
     <NormalTexture name="$parentNormalTexture" file="Interface\BUTTONS\UI-Quickslot2">
         <Size>
             <AbsDimension x="64" y="64"/>            
@@ -36,7 +40,7 @@
         <Anchors>
             <Anchor point="CENTER">
                 <Offset>
-                    <AbsDimension x="0" y="-1"/>                    
+                    <AbsDimension x="0" y="0"/>                    
                 </Offset>
             </Anchor>
         </Anchors>
@@ -45,19 +49,66 @@
     <HighlightTexture file="Interface\BUTTONS\ButtonHilight-Square" alphamode="ADD"/>
 </Button>
 
-
+<CheckButton name="BagChampFilterTemplate" inherits="BagChampItemTemplate" virtual="true">
+    <Scripts>
+        <OnEnter function="BagChamp_Filter_OnEnter"/>
+        <OnLeave function="BagChamp_Filter_OnLeave"/>
+        <OnClick function="BagChamp_Filter_OnClick"/>
+    </Scripts>
+    <checkedTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD"/>
+</CheckButton>
 
 <!-- Main frame-->
-<Frame name="BagChamp" parent="UIParent" frameStrata="HIGH" toplevel="true" enableMouse="true" movable="true" >
+<Frame name="BagChamp" parent="UIParent" inherits="BackdropTemplate" frameStrata="HIGH" toplevel="true" enableMouse="true" movable="true" >
     <Size x="200" y="200"/>
 	<Anchors>
 		<Anchor point="CENTER"/>
-	</Anchors> 
+	</Anchors>
     <Layers>
         <Layer level="BACKGROUND">
-         <Texture name="BagChampBackground" file="Interface\TutorialFrame\TutorialFrameBackground" tile="true"/>    
+            <Texture name="BagChampBackground" file="Interface\TutorialFrame\TutorialFrameBackground" tile="true"/>  
         </Layer>
-    </Layers>
+        <Layer level="OVERLAY">
+            <Texture name="SearchFrameBackground" file="Interface\CHATFRAME\UI-ChatInputBorder">
+                <Size>
+                    <AbsDimension x="300" y="30"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="-50" y="-4"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Texture>
+         </Layer>
+    </Layers>    
+    <Frames>
+        <Button name="$parent_Close" parentKey="close" inherits="UIPanelCloseButton">
+            <Anchors>
+                <Anchor point="TOPRIGHT">
+                    <Offset x="-4" y="-4"/>
+                </Anchor>
+            </Anchors>
+        </Button>
+        <EditBox name="$parent_Input" parentKey="input" autoFocus="false">
+            <Size x="300" y="30"/>
+            <Anchors>
+                <Anchor point="TOPRIGHT">
+                    <Offset x="-35" y="-4"/>
+                </Anchor>
+            </Anchors>            
+            <Scripts>
+                <OnEscapePressed>
+                    self:ClearFocus()
+                </OnEscapePressed>
+                <OnTextChanged>
+                    BagChamp_Update()
+                </OnTextChanged>
+            </Scripts>
+            <FontString inherits="GameFontHighlight"/>
+        </EditBox>
+    </Frames>
     <Scripts>
         <OnLoad function="BagChamp_OnLoad"/> 
         <OnMouseDown>
