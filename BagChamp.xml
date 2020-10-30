@@ -76,7 +76,7 @@
                 <Anchors>
                     <Anchor point="TOPRIGHT">
                         <Offset>
-                            <AbsDimension x="-50" y="-4"/>
+                            <AbsDimension x="-20" y="0"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -87,7 +87,7 @@
         <Button name="$parent_Close" parentKey="close" inherits="UIPanelCloseButton">
             <Anchors>
                 <Anchor point="TOPRIGHT">
-                    <Offset x="-4" y="-4"/>
+                    <Offset x="4" y="4"/>
                 </Anchor>
             </Anchors>
         </Button>
@@ -95,7 +95,7 @@
             <Size x="300" y="30"/>
             <Anchors>
                 <Anchor point="TOPRIGHT">
-                    <Offset x="-35" y="-4"/>
+                    <Offset x="-5" y="0"/>
                 </Anchor>
             </Anchors>            
             <Scripts>
@@ -129,6 +129,7 @@
           this.isMoving = false;
          end
         </OnHide>
+        <OnEvent function="BagChamp_OnEvent"/>
     </Scripts>
 
 </Frame>

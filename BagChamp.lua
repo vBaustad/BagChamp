@@ -84,6 +84,17 @@ local function itemNameSort(a, b)
     return a.name < b.name
 end
 
+local function itemTimeNameSort(a, b)
+    -- If the two items were looted at the same time
+    local aTime = BagChamp_ItemTimes[a.num]
+    local bTime = BagChamp_ItemTimes[b.num]
+    if aTime == bTime then 
+        return a.name < b.name
+    else
+        return aTime >= bTime
+    end
+end
+
 --Calculate bagslots
 function BagChamp_CalculateBagslots()
     
@@ -170,6 +181,9 @@ function BagChamp_OnLoad(self)
     end
 
     self.filters[-1] = self.filters[0]
+
+    self.bagCounts = {}
+    self:RegisterEvent("ADDON_LOADED")
     
 end
 
@@ -179,6 +193,8 @@ function BagChamp_Update()
     local totalSlots, freeSlots = BagChamp_CalculateBagslots() 
 
     local items = {}
+    local nameFilter = BagChamp.input:GetText():lower()
+
     -- Scan through the bag slots, looking for items
     for bag = 0, NUM_BAG_SLOTS do
         for slot = 0, GetContainerNumSlots(bag) do
@@ -188,6 +204,11 @@ function BagChamp_Update()
 
                 if BagChamp.qualityFilter then
                     shown = shown and BagChamp.filters[quality]:GetChecked()
+                end
+
+                if #nameFilter > 0 then
+                    local lowerName = GetItemInfo(link):lower()
+                    shown = shown and string.find(lowerName, nameFilter, 1, true)
                 end
 
                 if shown then
@@ -200,6 +221,7 @@ function BagChamp_Update()
                     quality = quality,
                     name = GetItemInfo(link),
                     link = link,
+                    num = itemNum,
                     }
                     else
                     -- The item already exists in table, just update the count
@@ -215,7 +237,7 @@ function BagChamp_Update()
     for link, entry in pairs(items) do
         table.insert(sortTbl, entry) 
     end
-    table.sort(sortTbl, itemNameSort)
+    table.sort(sortTbl, itemTimeNameSort)
 
 
     --Display items in bag (In order)
@@ -243,7 +265,6 @@ function BagChamp_Update()
             end
             --shows items from filter / show all items if not filtered
             button:Show()
-            button.count:Show()
             button.icon:Show()
         else
             --Hides items outside filter
@@ -279,4 +300,64 @@ function BagChamp_Filter_OnClick(self, button)
     BagChamp_Update()    
 end
 
+function BagChamp_OnEvent(self, event, ...)
+    if event == "ADDON_LOADED" and ... == "BagChamp" then
+        if not BagChamp_ItemTimes then
+            BagChamp_ItemTimes = {}
+        end
+
+        for bag = 0, NUM_BAG_SLOTS do
+            -- Use optional flag to skip updating times
+            bagChamp_ScanBag(bag, true)
+        end
+
+        self:UnregisterEvent("ADDON_LOADED")
+        self:RegisterEvent("BAG_UPDATE")
+
+    elseif event == "BAG_UPDATE" then
+        local bag = ...
+        if bag >= 0 then
+            bagChamp_ScanBag(bag)
+            if BagChamp:IsVisible() then
+                BagChamp_Update()
+            end
+        end
+    end
+end
+        
+
+function bagChamp_ScanBag(bag, initial)
+    if not BagChamp.bagCounts[bag] then
+        BagChamp.bagCounts[bag] = {}
+    end
+
+    local itemCounts = {}
+    for slot = 0, GetContainerNumSlots(bag) do
+        local texture, count, locked, quality, readable, lootable, link = GetContainerItemInfo(bag, slot)
+
+        if texture then
+            local itemId = tonumber(link:match("|Hitem:(%d+):"))
+            if not itemCounts[itemId] then
+                itemCounts[itemId] = count
+            else
+                itemCounts[itemId] = itemCounts[itemId] + count
+            end
+        end
+    end
+
+    if initial then
+        for itemId, count in pairs(itemCounts) do
+            BagChamp_ItemTimes[itemId] = BagChamp_ItemTimes[itemId] or time()
+        end
+    else 
+        for itemId, count in pairs(itemCounts) do
+            local oldCount = BagChamp.bagCounts[bag][itemId] or 0
+            if count > oldCount then
+                BagChamp_ItemTimes[itemId] = time()
+            end 
+        end
+    end
+    
+    BagChamp.bagCounts[bag] = itemCounts
+end
 
