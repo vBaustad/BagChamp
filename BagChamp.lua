@@ -60,11 +60,6 @@ local buttonsize = 39
 
 
 
-
-
-
-
-
 --Calculate height of the bag
 local function BagChamp_CalculateHeight(bagslots, width, spacing, buttonsize)
 
@@ -76,12 +71,8 @@ end
 -- Calculate width of the bag
 local function BagChamp_CalculateWidth(bagslots, width, spacing, buttonsize) 
 
-    return (width * buttonsize) + (width * spacing) + 14
+    return (width * buttonsize) + (width * spacing) + 4
 
-end
-
-local function itemNameSort(a, b)
-    return a.name < b.name
 end
 
 local function itemTimeNameSort(a, b)
@@ -134,10 +125,16 @@ end
 
 --On Load function
 function BagChamp_OnLoad(self)
+
+    UIPanelWindows["BagChamp"] = {        
+        whileDead = 1,
+        }
     
-    --testing assigning multiple variables from one call
+    --Get totalSlots and freeSlots
     local totalSlots, freeSlots = BagChamp_CalculateBagslots()   
     
+
+    --Set frame width and height
     local width = BagChamp_CalculateWidth(totalSlots, ItemSlotsWidth, iconSpaceWidth, buttonsize)
     local height = BagChamp_CalculateHeight(totalSlots, ItemSlotsWidth, iconSpaceHeight, buttonsize)
 
@@ -152,7 +149,7 @@ function BagChamp_OnLoad(self)
 
         self.items[idx] = item
         if idx == 1 then
-            item:SetPoint("TOPLEFT", 10, -50)
+            item:SetPoint("TOPLEFT", 4, -50)
             itemWidth = itemWidth +1
         elseif itemWidth == ItemSlotsWidth+1 then
             item:SetPoint("TOPLEFT", self.items[idx- ItemSlotsWidth], "BOTTOMLEFT", 0, -2)
@@ -170,7 +167,7 @@ function BagChamp_OnLoad(self)
         SetItemButtonTexture(button, "Interface\\ICONS\\INV_Misc_Gem_Pearl_02")
         self.filters[idx] = button 
         if idx == 0 then
-            button:SetPoint("TOPLEFT", 10, 40)
+            button:SetPoint("TOPLEFT", 5, -32)
         else
             button:SetPoint("TOPLEFT", self.filters[idx-1], "TOPRIGHT", 2, 0)
         end
@@ -242,8 +239,8 @@ function BagChamp_Update()
 
     --Display items in bag (In order)
     for i = 1, totalSlots do
-        local button = BagChamp.items[i]
-        local entry = sortTbl[i]
+        button = BagChamp.items[i]
+        entry = sortTbl[i]
 
         if entry then
             --There is an item in this slot
@@ -361,3 +358,10 @@ function bagChamp_ScanBag(bag, initial)
     BagChamp.bagCounts[bag] = itemCounts
 end
 
+--Add slash commands
+SLASH_BAGCHAMP1 = "/bc"
+SLASH_BAGCHAMP2 = "/bagchamp"
+SlashCmdList["BAGCHAMP"] = function(msg, editbox)
+    BagChamp.input:SetText(msg)
+    ShowUIPanel(BagChamp)
+end

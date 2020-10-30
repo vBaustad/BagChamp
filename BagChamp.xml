@@ -49,7 +49,54 @@
     <HighlightTexture file="Interface\BUTTONS\ButtonHilight-Square" alphamode="ADD"/>
 </Button>
 
-<CheckButton name="BagChampFilterTemplate" inherits="BagChampItemTemplate" virtual="true">
+<Button name="BagChampItemFilterTemplate" virtual="true">
+    <Size>
+        <AbsDimension x="16" y="16"/>
+    </Size>
+    <Layers>
+        <Layer level="BORDER">
+            <Texture name="$parentIconTexture" parentKey="icon" />
+            <FontString name="$parentCount" parentKey="count" inherits="NumberFontNormal" justifyH="RIGHT" hidden="true">
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT">
+                        <Offset>
+                            <AbsDimension x="-5" y="2"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </FontString>
+        </Layer>
+        <Layer level="OVERLAY">
+            <Texture name="$parentGlow" parentKey="glow" alphamode="ADD" file="Interface\BUTTONS\UI-ActionButton-Border">
+                <Size x="35" y="35"/>
+                <Anchors>
+                    <Anchor point="CENTER"/>
+                </Anchors>
+                <Color r="1.0" g="1.0" b="1.0" a="0.6"/>
+            </Texture> 
+        </Layer>
+    </Layers>
+    <Scripts>
+        <OnEnter function="BagChamp_Button_OnEnter"/>
+        <OnLeave function="BagChamp_Button_OnLeave"/>
+    </Scripts>
+    <NormalTexture name="$parentNormalTexture" file="Interface\BUTTONS\UI-Quickslot2">
+        <Size>
+            <AbsDimension x="32" y="32"/>            
+        </Size>
+        <Anchors>
+            <Anchor point="CENTER">
+                <Offset>
+                    <AbsDimension x="0" y="0"/>                    
+                </Offset>
+            </Anchor>
+        </Anchors>
+    </NormalTexture>
+    <PushedTexture file="Interface\BUTTONS\UI-Quickslot-Depress"/>
+    <HighlightTexture file="Interface\BUTTONS\ButtonHilight-Square" alphamode="ADD"/>
+</Button>
+
+<CheckButton name="BagChampFilterTemplate" inherits="BagChampItemFilterTemplate" virtual="true">
     <Scripts>
         <OnEnter function="BagChamp_Filter_OnEnter"/>
         <OnLeave function="BagChamp_Filter_OnLeave"/>
@@ -58,8 +105,8 @@
     <checkedTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD"/>
 </CheckButton>
 
-<!-- Main frame-->
-<Frame name="BagChamp" parent="UIParent" inherits="BackdropTemplate" frameStrata="HIGH" toplevel="true" enableMouse="true" movable="true" >
+<!-- Main frame hidden="true"-->
+<Frame name="BagChamp" parent="UIParent" inherits="BackdropTemplate" frameStrata="HIGH" toplevel="true" enableMouse="true" movable="true"  >
     <Size x="200" y="200"/>
 	<Anchors>
 		<Anchor point="CENTER"/>
@@ -71,12 +118,12 @@
         <Layer level="OVERLAY">
             <Texture name="SearchFrameBackground" file="Interface\CHATFRAME\UI-ChatInputBorder">
                 <Size>
-                    <AbsDimension x="300" y="30"/>
+                    <AbsDimension x="250" y="22"/>
                 </Size>
                 <Anchors>
-                    <Anchor point="TOPRIGHT">
+                    <Anchor point="TOP">
                         <Offset>
-                            <AbsDimension x="-20" y="0"/>
+                            <AbsDimension x="8" y="-28"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -92,10 +139,10 @@
             </Anchors>
         </Button>
         <EditBox name="$parent_Input" parentKey="input" autoFocus="false">
-            <Size x="300" y="30"/>
+            <Size x="250" y="20"/>
             <Anchors>
-                <Anchor point="TOPRIGHT">
-                    <Offset x="-5" y="0"/>
+                <Anchor point="TOP">
+                    <Offset x="22" y="-28"/>
                 </Anchor>
             </Anchors>            
             <Scripts>
