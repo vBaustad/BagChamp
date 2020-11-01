@@ -106,35 +106,16 @@
 </CheckButton>
 
 <!-- Main frame hidden="true"-->
-<Frame name="BagChamp" parent="UIParent" inherits="BackdropTemplate" frameStrata="HIGH" toplevel="true" enableMouse="true" movable="true"  >
+<Frame name="BagChamp" parent="UIParent" frameStrata="HIGH" toplevel="true" enableMouse="true" movable="true"  >
     <Size x="200" y="200"/>
 	<Anchors>
 		<Anchor point="CENTER"/>
-	</Anchors>
-    <Layers>
-        <Layer level="BACKGROUND">
-            <Texture name="BagChampBackground" file="Interface\TutorialFrame\TutorialFrameBackground" tile="true"/>  
-        </Layer>
-        <Layer level="OVERLAY">
-            <Texture name="SearchFrameBackground" file="Interface\CHATFRAME\UI-ChatInputBorder">
-                <Size>
-                    <AbsDimension x="250" y="22"/>
-                </Size>
-                <Anchors>
-                    <Anchor point="TOP">
-                        <Offset>
-                            <AbsDimension x="8" y="-28"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </Texture>
-         </Layer>
-    </Layers>    
+	</Anchors>  
     <Frames>
         <Button name="$parent_Close" parentKey="close" inherits="UIPanelCloseButton">
             <Anchors>
                 <Anchor point="TOPRIGHT">
-                    <Offset x="4" y="4"/>
+                    <Offset x="-2" y="-2"/>
                 </Anchor>
             </Anchors>
         </Button>
@@ -155,6 +136,7 @@
             </Scripts>
             <FontString inherits="GameFontHighlight"/>
         </EditBox>
+        
     </Frames>
     <Scripts>
         <OnLoad function="BagChamp_OnLoad"/> 
@@ -175,7 +157,7 @@
           this:StopMovingOrSizing();
           this.isMoving = false;
          end
-        </OnHide>
+        </OnHide>        
         <OnEvent function="BagChamp_OnEvent"/>
     </Scripts>
 

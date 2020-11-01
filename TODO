@@ -1,0 +1,46 @@
+- Addon information at start of file
+- Searchbar
+    - Find better background image
+    - Size matching width of window
+- Border @done
+    - Figure out how to create backdrop @done
+- Add Bag row
+    - Hidden until button pressed to show
+    - Implement ability to switch/add bags
+- Add items to bagslots @done
+- Get total slots and free slots in bag
+    - Figure out how to wait with checking bagsluts until completely finished logging in
+- Title with character name @done
+- Add currency bar
+    - Allow more than 3 currencies
+- Sort function 
+    - sort by time looted @done
+    - sort by name @done
+    - sort by rarity
+    - sort by own filters
+    - Special sorting. Hearthstones, flight whistle etc should be first
+- Localization
+    - Initial setup @done
+    - This won't be done untill addon is finished
+- Add settingspage
+    - Items per row
+    - Spacing(?)
+    - IconSize(?)
+    - Option to show only used space (With one bagslot showing slots left)
+    - Chat shortcuts to settings
+        - shortcuts set @done
+            - atm only showing actual bags, not settingspage
+- Color around items based on rarity @done
+- Show itemlevel on equippable items
+- Add close bags button @done
+- Make window movable @done
+- Open bag with keybind (Listen for open bag event?)
+- Hide blizzard bags
+- Functionality to make their own sorting and spacing, like arkinventory
+- Switch between character inventories
+- bank and guildbank
+- Colorthemes
+
+
+    
+    

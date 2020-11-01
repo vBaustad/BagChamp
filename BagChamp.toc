@@ -2,6 +2,7 @@
 ## Title: BagChamp
 ## Author: vBaustad
 ## Notes: Clean and compact bag addon.
+## SavedVariablesPerCharacter: BagBuddy_ItemTimes
 ## Version: 0.0.1
 ## DefaultState: enabled
 

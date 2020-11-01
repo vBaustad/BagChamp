@@ -5,47 +5,6 @@
     
 
 --------------------------------------------------------------------------------------
-
-	
-
-
-        TODO LIST: 
-        
-        * addon information at start of file
-        * searchbar
-        * border
-        * bag row
-        * items to bagslots
-        * fetch bagslots
-        * fetch items in bags
-        * title with character name
-        * currency "bar" - Allow more than 3
-        * sort function to bags - From top / From bot 
-        * Localization
-        * settingspage
-        * coloring around items for rarity
-        * Itemlevel on equippable items
-        * close button 
-        * move window
-        * open window with keybind
-        * hide blizzard bags
-        * Option to show only used space (with one bagslot showing slots left)
-        
-
-        NEXT LEVEL DEV:
-        * functionality to make their own sorting and spacing, like arkinventory
-        * Switch between character inventories
-        * bank and guildbank
-        * themes
-
-
-
-
-
-
-
-
---------------------------------------------------------------------------------------
 ]]
 
 
@@ -62,7 +21,6 @@ local buttonsize = 39
 
 --Calculate height of the bag
 local function BagChamp_CalculateHeight(bagslots, width, spacing, buttonsize)
-
     rows = math.ceil(bagslots / width)
     return ( rows * buttonsize) + (rows * spacing) +60
 
@@ -70,11 +28,11 @@ end
 
 -- Calculate width of the bag
 local function BagChamp_CalculateWidth(bagslots, width, spacing, buttonsize) 
-
-    return (width * buttonsize) + (width * spacing) + 4
+    return (width * buttonsize) + (width * spacing) + 20
 
 end
 
+-- Sort items based on time looted and name
 local function itemTimeNameSort(a, b)
     -- If the two items were looted at the same time
     local aTime = BagChamp_ItemTimes[a.num]
@@ -86,7 +44,7 @@ local function itemTimeNameSort(a, b)
     end
 end
 
---Calculate bagslots
+-- Calculate bagslots
 function BagChamp_CalculateBagslots()
     
     local freeSlots = 0
@@ -110,6 +68,7 @@ function BagChamp_CalculateBagslots()
 
 end
 
+-- when hovering mouse over items in bag
 function BagChamp_Button_OnEnter(self, motion)
     if self.link then
         GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
@@ -118,20 +77,48 @@ function BagChamp_Button_OnEnter(self, motion)
     end
 end
 
+-- when removing hover on items in bag
 function BagChamp_Button_OnLeave(self, motion)
     GameTooltip:Hide()
 end
 
 
 --On Load function
-function BagChamp_OnLoad(self)
+function BagChamp_OnLoad(self)    
 
     UIPanelWindows["BagChamp"] = {        
         whileDead = 1,
         }
+
+       
+
+        -- Create backdrop in BACKGROUND 
+        BagChamp.Backdrop = CreateFrame("Frame", nil, BagChamp, BackdropTemplateMixin and "BackdropTemplate")
+        BagChamp.Backdrop:SetAllPoints()
+        BagChamp.Backdrop.backdropInfo = {
+            bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+            edgeFile = "Interface\\FriendsFrame\\UI-Toast-Border",
+            tile = true,
+            tileSize = 16,
+            edgeSize = 16, 
+            insets = {left = 5, right = 5, top = 5, bottom = 5, },
+        }
+        BagChamp.Backdrop:SetBackdrop(BagChamp.Backdrop.backdropInfo)
+        BagChamp.Backdrop:SetBackdropColor(r, g, b, a)
+        BagChamp.Backdrop:SetBackdropBorderColor(r, g, b, a)
+
+        BagChamp.Backdrop:ApplyBackdrop()
     
+        -- Create bagtitle on backdrop
+        BagChamp.Title = BagChamp.Backdrop:CreateFontString("BagChamp_Title", "OVERLAY", "GameFontNormal")
+        BagChamp.Title:SetPoint("TOPLEFT", 8, -8)
+        BagChamp.Title:SetText(UnitName("Player") .."'s inventory")
+        BagChamp.Title:SetFont("Fonts\\FRIZQT__.TTF", 16)
+   
+
     --Get totalSlots and freeSlots
-    local totalSlots, freeSlots = BagChamp_CalculateBagslots()   
+    
+    totalSlots, freeSlots = BagChamp_CalculateBagslots()   
     
 
     --Set frame width and height
@@ -149,7 +136,7 @@ function BagChamp_OnLoad(self)
 
         self.items[idx] = item
         if idx == 1 then
-            item:SetPoint("TOPLEFT", 4, -50)
+            item:SetPoint("TOPLEFT", 12, -50)
             itemWidth = itemWidth +1
         elseif itemWidth == ItemSlotsWidth+1 then
             item:SetPoint("TOPLEFT", self.items[idx- ItemSlotsWidth], "BOTTOMLEFT", 0, -2)
@@ -167,7 +154,7 @@ function BagChamp_OnLoad(self)
         SetItemButtonTexture(button, "Interface\\ICONS\\INV_Misc_Gem_Pearl_02")
         self.filters[idx] = button 
         if idx == 0 then
-            button:SetPoint("TOPLEFT", 5, -32)
+            button:SetPoint("TOPLEFT", 12, -32)
         else
             button:SetPoint("TOPLEFT", self.filters[idx-1], "TOPRIGHT", 2, 0)
         end
@@ -185,98 +172,9 @@ function BagChamp_OnLoad(self)
 end
 
 
-function BagChamp_Update()
-
-    local totalSlots, freeSlots = BagChamp_CalculateBagslots() 
-
-    local items = {}
-    local nameFilter = BagChamp.input:GetText():lower()
-
-    -- Scan through the bag slots, looking for items
-    for bag = 0, NUM_BAG_SLOTS do
-        for slot = 0, GetContainerNumSlots(bag) do
-            local texture, count, locked, quality, readable, lootable, link = GetContainerItemInfo(bag, slot)
-            if texture then
-                local shown = true
-
-                if BagChamp.qualityFilter then
-                    shown = shown and BagChamp.filters[quality]:GetChecked()
-                end
-
-                if #nameFilter > 0 then
-                    local lowerName = GetItemInfo(link):lower()
-                    shown = shown and string.find(lowerName, nameFilter, 1, true)
-                end
-
-                if shown then
-                    -- If an item is found, grab the item number and store data
-                    local itemNum = tonumber(link:match("|Hitem:(%d+):"))
-                    if not items[itemNum] then
-                    items[itemNum] = {
-                    texture = texture,
-                    count = count,
-                    quality = quality,
-                    name = GetItemInfo(link),
-                    link = link,
-                    num = itemNum,
-                    }
-                    else
-                    -- The item already exists in table, just update the count
-                    items[itemNum].count = items[itemNum].count + count
-                    end
-                end
-            end
-        end
-    end
-
-    --Sort items in table
-    local sortTbl = {}
-    for link, entry in pairs(items) do
-        table.insert(sortTbl, entry) 
-    end
-    table.sort(sortTbl, itemTimeNameSort)
 
 
-    --Display items in bag (In order)
-    for i = 1, totalSlots do
-        button = BagChamp.items[i]
-        entry = sortTbl[i]
-
-        if entry then
-            --There is an item in this slot
-            
-            button.link = entry.link
-            button.icon:SetTexture(entry.texture)
-            if entry.count > 1 then
-                button.count:SetText(entry.count)
-                button.count:Show()
-            else
-                button.count:Hide()
-            end
-
-            if entry.quality > -1 then 
-                button.glow:SetVertexColor(GetItemQualityColor(entry.quality))
-                button.glow:Show()
-            else
-                button.glow:Hide()
-            end
-            --shows items from filter / show all items if not filtered
-            button:Show()
-            button.icon:Show()
-        else
-            --Hides items outside filter
-            SetItemButtonTexture(button, "Interface\\PaperDoll\\UI-Backpack-EmptySlot")
-            button.glow:Hide()
-            button.link = nil
-            button.count:Hide()
-            --button.icon:Hide()
-            
-        end 
-    end
-
-end
-
-function BagChamp_Filter_OnEnter(self, motion)
+function BagChamp_Filter_OnEnter(self, motion)    
     GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
     GameTooltip:SetText(_G["ITEM_QUALITY" .. self.quality .. "_DESC"])
     GameTooltip:Show()
@@ -286,7 +184,7 @@ function BagChamp_Filter_OnLeave(self, motion)
     GameTooltip:Hide()
 end
 
-function BagChamp_Filter_OnClick(self, button)    
+function BagChamp_Filter_OnClick(self, button)   
     BagChamp.qualityFilter = false
     for idx = 0, 6 do
         local button = BagChamp.filters[idx]
@@ -298,6 +196,7 @@ function BagChamp_Filter_OnClick(self, button)
 end
 
 function BagChamp_OnEvent(self, event, ...)
+    
     if event == "ADDON_LOADED" and ... == "BagChamp" then
         if not BagChamp_ItemTimes then
             BagChamp_ItemTimes = {}
@@ -356,6 +255,99 @@ function bagChamp_ScanBag(bag, initial)
     end
     
     BagChamp.bagCounts[bag] = itemCounts
+end
+
+
+function BagChamp_Update()
+    --local totalSlots, freeSlots = BagChamp_CalculateBagslots() 
+    local items = {}
+    local nameFilter = BagChamp.input:GetText():lower()
+    
+
+    -- Scan through the bag slots, looking for items
+    for bag = 0, NUM_BAG_SLOTS do
+        for slot = 0, GetContainerNumSlots(bag) do
+            local texture, count, locked, quality, readable, lootable, link = GetContainerItemInfo(bag, slot)
+            if texture then
+                local shown = true
+
+                if BagChamp.qualityFilter then
+                    shown = shown and BagChamp.filters[quality]:GetChecked()
+                end
+
+                if #nameFilter > 0 then
+                    local lowerName = GetItemInfo(link):lower()
+                    shown = shown and string.find(lowerName, nameFilter, 1, true)
+                end
+
+                if shown then
+                    -- If an item is found, grab the item number and store data
+                    local itemNum = tonumber(link:match("|Hitem:(%d+):"))
+                    if not items[itemNum] then
+                    items[itemNum] = {
+                    texture = texture,
+                    count = count,
+                    quality = quality,
+                    name = GetItemInfo(link),
+                    link = link,
+                    num = itemNum,
+                    }
+                    else
+                    -- The item already exists in table, just update the count
+                    items[itemNum].count = items[itemNum].count + count
+                    end
+                end
+            end
+        end
+    end
+
+    --Sort items in table
+    local sortTbl = {}
+    for link, entry in pairs(items) do
+        table.insert(sortTbl, entry) 
+    end
+    table.sort(sortTbl, itemTimeNameSort)
+
+
+    --Display items in bag (In order)
+    for i = 1, totalSlots do
+        local button = BagChamp.items[i]
+        local entry = sortTbl[i]
+        
+        
+
+        if entry then
+            --There is an item in this slot
+            
+            button.link = entry.link
+            button.icon:SetTexture(entry.texture)
+            if entry.count > 1 then
+                button.count:SetText(entry.count)
+                button.count:Show()
+            else
+                button.count:Hide()
+            end
+
+            if entry.quality > -1 then 
+                button.glow:SetVertexColor(GetItemQualityColor(entry.quality))
+                button.glow:Show()
+            else
+                button.glow:Hide()
+            end
+            --shows items from filter / show all items if not filtered
+            button:Show()
+            button.icon:Show()
+        else
+            --Hides items outside filter
+            SetItemButtonTexture(button, "Interface\\PaperDoll\\UI-Backpack-EmptySlot")
+            button.glow:Hide()
+            button.link = nil
+            button.count:Hide()
+            --button.icon:Hide()
+            
+        end 
+    end
+
 end
 
 --Add slash commands
